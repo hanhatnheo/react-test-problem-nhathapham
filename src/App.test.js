@@ -8,6 +8,12 @@ const { Primary } = composeStories(stories);
 // Add your tests here
 it('Button text initially says click me', async () => {
     render(<Primary />);
+    const button = screen.getByRole('button', { name : 'click me'});
+    expect(button).toHaveTextContent(/click me/i);
+});
+
+it('Screen has text click me', async () => {
+    render(<Primary />);
     expect(screen.getByText(/click me/i)).not.toBeNull()
 });
 
@@ -20,9 +26,9 @@ it('Button can change to thanks', async () => {
 
 it('Clicking button changes to thanks', async () => {
     render(<Primary />);
-    const button = screen.getByRole('button', { name : 'click me'});
+    const button = screen.getByRole('button', {name : 'click me'});
     fireEvent.click(button);
-    const clickedButton = screen.getByRole('button', { name : 'thanks'});
+    const clickedButton = screen.getByRole('button', {name : 'thanks'});
     expect(clickedButton).toBeInTheDocument();
 });
 
