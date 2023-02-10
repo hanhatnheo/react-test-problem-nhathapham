@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  test-problem-storybook: 
+    platform: linux/amd64  # needed when developing on apple silicon, harmless otherwise
+    build: .
+    ports:
+      - 6006:6006  # storybook
+    entrypoint: 
+      - npm
+      - run
+      - storybook
+    volumes:
+      # need to be careful about overwriting `/node_modules` in container
+      # hack from https://burnedikt.com/dockerized-node-development-and-mounting-node-volumes/#exclude-node_modules-from-the-mount  
+      - ./public:/app/public
+      - ./src:/app/src
+      - ./.storybook:/app/.storybook
+
+  test-problem-app: 
+    platform: linux/amd64  # needed when developing on apple silicon, harmless otherwise
+    build: .
+    ports:
+      - 3000:3000  # app
+    entrypoint: 
+      - npm
+      - start
+    volumes:
+      # need to be careful about overwriting `/node_modules` in container
+      # hack from https://burnedikt.com/dockerized-node-development-and-mounting-node-volumes/#exclude-node_modules-from-the-mount  
+      - ./public:/app/public
+      - ./src:/app/src
+      
+      # also need to include any files that are not in these directories. This is really a pain.
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
